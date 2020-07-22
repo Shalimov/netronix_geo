@@ -23,7 +23,11 @@ defmodule NetronixGeo.Context.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: cleanup_user(Repo.get!(User, id))
+  @spec get_user!(non_neg_integer()) :: User.t()
+  def get_user!(id) do
+    query = from user in User, where: user.id == ^id, preload: [:roles]
+    cleanup_user(Repo.one!(query))
+  end
 
   @doc false
   @spec cleanup_user(%User{}) :: %User{}

@@ -11,8 +11,6 @@ defmodule NetronixGeo.Application do
       NetronixGeo.Repo,
       # Start the Telemetry supervisor
       NetronixGeoWeb.Telemetry,
-      # Start the PubSub system
-      {Phoenix.PubSub, name: NetronixGeo.PubSub},
       # Start the Endpoint (http/https)
       NetronixGeoWeb.Endpoint
       # Start a worker by calling: NetronixGeo.Worker.start_link(arg)
