@@ -1,0 +1,57 @@
+Geo Drivers Managers
+
+Task API:
+- list_all [manager]
+- list_nearest [driver, manager] // driver can list unassigned
+- assign [driver]
+- complete [driver]
+- create [manager]
+
+
+ROLE<Manager>:
+Able:
+- Create a task with geo coords (pick up/delivery) (update/delete is not supported)
+Not Able:
+- Set driver to a task
+- Change status of a task
+- Pick up a task
+
+ROLE<Driver>:
+Able:
+- Can pick up an unassigned task
+- Can change its assigned task status from assigned to done
+Not able:
+- Can not change status of other driver task
+- Can not pick up an assigned task
+- Can not create/update(except status)/delete a task 
+
+POSS Models:
+(Post GIS)
+Task:
+- id
+- status (new, assigned, done)
+- pickup_point (geo idx)
+- delivery_point (geo idx)?
+- assignee
+- creator
+- created_at
+- updated_at?
+- assigned_at
+- done_at
+
+User:
+- id
+- email
+
+Role:
+- id
+- name
+
+U2R:
+- user_id
+- role_id
+
+RToken
+- refresh_token
+- status
+
