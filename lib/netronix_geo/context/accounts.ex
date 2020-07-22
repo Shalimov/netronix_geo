@@ -3,23 +3,11 @@ defmodule NetronixGeo.Context.Accounts do
   The Accounts context.
   """
 
-  import Ecto.Query, warn: false
+  import Ecto.Query, only: [from: 2], warn: false
+  alias Argon2
+
   alias NetronixGeo.Repo
-
   alias NetronixGeo.Model.User
-
-  @doc """
-  Returns the list of users.
-
-  ## Examples
-
-      iex> list_users()
-      [%User{}, ...]
-
-  """
-  def list_users do
-    Repo.all(User)
-  end
 
   @doc """
   Gets a single user.
@@ -35,5 +23,9 @@ defmodule NetronixGeo.Context.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id), do: cleanup_user(Repo.get!(User, id))
+
+  @doc false
+  @spec cleanup_user(%User{}) :: %User{}
+  defp cleanup_user(user), do: %User{user | password: nil}
 end

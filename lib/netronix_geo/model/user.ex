@@ -11,7 +11,6 @@ defmodule NetronixGeo.Model.User do
     many_to_many :roles, Model.Role, join_through: "user_roles"
     has_many :created_tasks, Model.Task, foreign_key: :creator_id
     has_many :assigned_tasks, Model.Task, foreign_key: :assignee_id
-    has_one :token, Model.Token
 
     timestamps(updated_at: false)
   end

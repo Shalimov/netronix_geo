@@ -51,7 +51,3 @@ U2R:
 - user_id
 - role_id
 
-RToken
-- refresh_token
-- status
-

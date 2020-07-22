@@ -3,11 +3,12 @@ defmodule NetronixGeoWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+
+    plug NetronixGeoWeb.AuthPipeline
   end
 
   scope "/api", NetronixGeoWeb do
     pipe_through :api
-
 
     get "/task/:name", TaskController, :name
   end

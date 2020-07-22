@@ -10,6 +10,11 @@ use Mix.Config
 config :netronix_geo,
   ecto_repos: [NetronixGeo.Repo]
 
+# Configures the auth module based on Guardian lib
+config :netronix_geo, NetronixGeoWeb.Auth.Guardian,
+  issuer: "NetronixGeo",
+  secret_key: "#{Mix.env()}"
+
 # Configures the endpoint
 config :netronix_geo, NetronixGeoWeb.Endpoint,
   url: [host: "localhost"],

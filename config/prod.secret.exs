@@ -30,6 +30,8 @@ config :netronix_geo, NetronixGeoWeb.Endpoint,
   ],
   secret_key_base: secret_key_base
 
+config :netronix_geo, NetronixGeoWeb.Auth.Guardian, secret_key: System.get_env("SECRET_JWT")
+
 # ## Using releases (Elixir v1.9+)
 #
 # If you are doing OTP releases, you need to instruct Phoenix
