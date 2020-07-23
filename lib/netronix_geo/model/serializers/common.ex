@@ -1,5 +1,5 @@
-defimpl Jason.Encoder, for: [NetronixGeo.Model.Task] do
-  @doc "Jason encoder protocol implementation for Ecto.Model of Task"
+defimpl Jason.Encoder, for: [NetronixGeo.Model.Role, NetronixGeo.Model.Task] do
+  @doc "Jason encoder protocol implementation for Ecto.Model of Role"
   def encode(struct, opts) do
     Enum.reduce(Map.from_struct(struct), %{}, fn
       {_key, %Ecto.Association.NotLoaded{}}, acc -> acc

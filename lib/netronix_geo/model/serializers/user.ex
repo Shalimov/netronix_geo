@@ -1,4 +1,4 @@
-defimpl Jason.Encoder, for: [NetronixGeo.Model.User] do
+defimpl Jason.Encoder, for: NetronixGeo.Model.User do
   @doc "Jason encoder protocol implementation for Ecto.Model of User"
   def encode(struct, opts) do
     Enum.reduce(Map.from_struct(struct), %{}, fn
