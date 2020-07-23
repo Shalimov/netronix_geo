@@ -47,7 +47,8 @@ defmodule NetronixGeo.MixProject do
       {:guardian, "~> 2.1"},
       {:argon2_elixir, "~> 2.3"},
       {:comeonin, "~> 5.3"},
-      {:credo, "~> 1.4"}
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:bodyguard, "~> 2.4"}
     ]
   end
 

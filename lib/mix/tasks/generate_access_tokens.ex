@@ -15,7 +15,7 @@ defmodule Mix.Tasks.GenerateAccessTokens do
     |> Repo.all()
     |> Enum.each(fn user ->
       {:ok, token, _payload} =
-        Guardian.encode_and_sign(user, %{roles: Enum.map(user.roles, &Map.get(&1, :name))})
+        Guardian.encode_and_sign(user, %{roles: Enum.map(user.roles, & &1.name)})
 
       IO.puts("""
       --------------------------------
