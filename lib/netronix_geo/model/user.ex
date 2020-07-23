@@ -16,6 +16,11 @@ defmodule NetronixGeo.Model.User do
   end
 
   @doc false
+  @spec changeset(
+          {map, map} | %{:__struct__ => atom | %{__changeset__: map}, optional(atom) => any},
+          :invalid
+          | %{:roles => any, optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:email, :password])
@@ -24,7 +29,9 @@ defmodule NetronixGeo.Model.User do
     |> put_password_hash()
   end
 
-  defp put_password_hash(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do
+  defp put_password_hash(
+         %Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset
+       ) do
     change(changeset, password: Argon2.hash_pwd_salt(password))
   end
 

@@ -4,7 +4,6 @@ defmodule NetronixGeo.Context.Accounts do
   """
 
   import Ecto.Query, only: [from: 2], warn: false
-  alias Argon2
 
   alias NetronixGeo.Repo
   alias NetronixGeo.Model.User
