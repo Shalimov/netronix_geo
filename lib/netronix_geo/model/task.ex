@@ -48,7 +48,10 @@ defmodule NetronixGeo.Model.Task do
 
   @doc false
   @spec complete_changeset(Ecto.Changeset.t()) :: Ecto.Changeset.t()
-  def complete_changeset(task), do: put_change(task, :completed_at, current_time())
+  def complete_changeset(task) do
+    change(task)
+    |> put_change(:completed_at, current_time())
+  end
 
   @doc false
   @spec to_gis_point({float(), float()}) :: Point.t()
@@ -56,5 +59,5 @@ defmodule NetronixGeo.Model.Task do
 
   @doc false
   @spec current_time() :: NaiveDateTime.t()
-  defp current_time(), do: NaiveDateTime.truncate(NaiveDateTime.utc_now(), :microsecond)
+  defp current_time(), do: NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
 end

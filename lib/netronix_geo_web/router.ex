@@ -14,6 +14,7 @@ defmodule NetronixGeoWeb.Router do
     patch "/task/:id/assign", TaskController, :assign
     patch "/task/:id/complete", TaskController, :complete
     get "/task/nearest", TaskController, :list_nearest_tasks
+    get "/task/:status", TaskController, :list_tasks
   end
 
   # Enables LiveDashboard only for development

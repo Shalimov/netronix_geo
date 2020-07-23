@@ -3,7 +3,7 @@ defmodule NetronixGeo.Context.TaskManager do
   The TaskManager context.
   """
 
-  import Ecto.Query, only: [from: 2], warn: false
+  import Ecto.Query, only: [from: 2, from: 1], warn: false
   import Geo.PostGIS, only: [st_distance: 2]
 
   alias __MODULE__
@@ -11,6 +11,31 @@ defmodule NetronixGeo.Context.TaskManager do
   alias NetronixGeo.Model.{Task, User}
 
   defdelegate authorize(action, user, params), to: TaskManager.Policy
+
+  @doc """
+  Returns the list of tasks by status
+
+  Where status can be "assigned", "completed", "all"
+  Only manger can list task by status
+
+  ## Examples
+
+    iex> list_nearest_tasks()
+    [%Task{}, ...]
+
+  """
+  def list_tasks(user, status \\ "all") when status in ["assigned", "completed", "all"] do
+    with :ok <- Bodyguard.permit(TaskManager.Policy, :list_tasks_by_status, user) do
+      query =
+        case status do
+          "completed" -> from task in Task, where: not is_nil(task.completed_at)
+          "assigned" -> from task in Task, where: not is_nil(task.assigned_at)
+          _ -> from(task in Task)
+        end
+
+      Repo.all(query)
+    end
+  end
 
   @doc """
   Returns the list of nearest tasks.

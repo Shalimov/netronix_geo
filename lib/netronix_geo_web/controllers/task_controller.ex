@@ -20,6 +20,7 @@ defmodule NetronixGeoWeb.TaskController do
   """
   @spec assign(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def assign(conn, %{"id" => task_id}) do
+    task_id = String.to_integer(task_id)
     current_user = Guardian.Plug.current_resource(conn)
     TaskManager.assign_task!(task_id, current_user)
 
@@ -31,6 +32,7 @@ defmodule NetronixGeoWeb.TaskController do
   """
   @spec complete(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def complete(conn, %{"id" => task_id}) do
+    task_id = String.to_integer(task_id)
     current_user = Guardian.Plug.current_resource(conn)
     TaskManager.complete_task!(task_id, current_user)
 
@@ -38,11 +40,22 @@ defmodule NetronixGeoWeb.TaskController do
   end
 
   @doc """
-  Returns nearest task to some specific coordinates
+  Returns nearest tasks to some specific coordinates
   """
   @spec list_nearest_tasks(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def list_nearest_tasks(conn, %{"lng" => lng, "lat" => lat}) do
     tasks = TaskManager.list_nearest_tasks({lng, lat})
+
+    json(conn, tasks)
+  end
+
+  @doc """
+  Returns tasks by status
+  """
+  @spec list_tasks(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def list_tasks(conn, %{"status" => status}) do
+    current_user = Guardian.Plug.current_resource(conn)
+    tasks = TaskManager.list_tasks(current_user, status)
 
     json(conn, tasks)
   end
