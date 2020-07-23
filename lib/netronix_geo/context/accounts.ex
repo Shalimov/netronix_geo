@@ -22,7 +22,7 @@ defmodule NetronixGeo.Context.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  @spec get_user!(non_neg_integer()) :: User.t()
+  @spec get_user!(non_neg_integer()) :: User.t() | no_return()
   def get_user!(id) do
     query = from user in User, where: user.id == ^id, preload: [:roles]
     cleanup_user(Repo.one!(query))
