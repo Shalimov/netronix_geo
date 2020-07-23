@@ -10,7 +10,10 @@ defmodule NetronixGeoWeb.Router do
   scope "/api", NetronixGeoWeb do
     pipe_through :api
 
-    get "/task/:name", TaskController, :name
+    post "/task", TaskController, :create
+    patch "/task/:id/assign", TaskController, :assign
+    patch "/task/:id/complete", TaskController, :complete
+    get "/task/nearest", TaskController, :list_nearest_tasks
   end
 
   # Enables LiveDashboard only for development

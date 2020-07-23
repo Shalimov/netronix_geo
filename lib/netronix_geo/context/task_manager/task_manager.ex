@@ -39,13 +39,13 @@ defmodule NetronixGeo.Context.TaskManager do
   Driver role can not execute this operation
   """
   @spec create_task!(User.t(), {float(), float()}, {float(), float()}) :: Task.t() | no_return()
-  def create_task!(user, pickup_loc, delivery_loc) do
+  def create_task!(user, pickup_coords, delivery_coords) do
     with :ok <- Bodyguard.permit!(TaskManager.Policy, :task_creation, user) do
       %Task{}
       |> Task.create_changeset(%{
         creator: user,
-        pickup_point: Task.to_gis_point(pickup_loc),
-        delivery_point: Task.to_gis_point(delivery_loc)
+        pickup_point: Task.to_gis_point(pickup_coords),
+        delivery_point: Task.to_gis_point(delivery_coords)
       })
       |> Repo.insert!()
     end

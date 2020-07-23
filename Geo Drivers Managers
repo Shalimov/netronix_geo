@@ -1,7 +1,6 @@
 Geo Drivers Managers
 
 Task API:
-- list_all [manager]
 - list_nearest [driver, manager] // driver can list unassigned
 - assign [driver]
 - complete [driver]
