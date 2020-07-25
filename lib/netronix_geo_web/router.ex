@@ -4,17 +4,21 @@ defmodule NetronixGeoWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
 
-    plug NetronixGeoWeb.AuthPipeline
+    if Mix.env() != :test do
+      plug NetronixGeoWeb.AuthPipeline
+    end
   end
 
   scope "/api", NetronixGeoWeb do
     pipe_through :api
 
-    post "/task", TaskController, :create
-    patch "/task/:id/assign", TaskController, :assign
-    patch "/task/:id/complete", TaskController, :complete
-    get "/task/nearest", TaskController, :list_nearest_tasks
-    get "/task/:status", TaskController, :list_tasks
+    post "/tasks", TaskController, :create
+
+    patch "/tasks/:id/assign", TaskController, :assign
+    patch "/tasks/:id/complete", TaskController, :complete
+
+    get "/tasks/nearest", TaskController, :list_nearest_tasks
+    get "/tasks/:status", TaskController, :list_tasks
   end
 
   # Enables LiveDashboard only for development

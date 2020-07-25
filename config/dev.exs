@@ -18,8 +18,8 @@ config :netronix_geo, NetronixGeo.Repo,
 # with webpack to recompile .js and .css sources.
 config :netronix_geo, NetronixGeoWeb.Endpoint,
   http: [port: 4000],
-  debug_errors: true,
   code_reloader: true,
+  debug_errors: false,
   check_origin: false,
   watchers: []
 

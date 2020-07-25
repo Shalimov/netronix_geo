@@ -33,7 +33,7 @@ defmodule NetronixGeo.Context.TaskManager do
           _ -> from(task in Task)
         end
 
-      Repo.all(query)
+      {:ok, Repo.all(query)}
     end
   end
 
@@ -46,7 +46,7 @@ defmodule NetronixGeo.Context.TaskManager do
       [%Task{}, ...]
 
   """
-  @spec list_nearest_tasks({float(), float()}) :: list(Task.t()) | Ecto.QueryError
+  @spec list_nearest_tasks({float(), float()}) :: {:ok, list(Task.t())}
   def list_nearest_tasks(location) do
     query =
       from task in Task,
@@ -54,7 +54,7 @@ defmodule NetronixGeo.Context.TaskManager do
         order_by: st_distance(^Task.to_gis_point(location), task.pickup_point),
         limit: 10
 
-    Repo.all(query)
+    {:ok, Repo.all(query)}
   end
 
   @doc """
@@ -63,16 +63,17 @@ defmodule NetronixGeo.Context.TaskManager do
   Manager is only the role to have such an ability
   Driver role can not execute this operation
   """
-  @spec create_task!(User.t(), {float(), float()}, {float(), float()}) :: Task.t() | no_return()
-  def create_task!(user, pickup_coords, delivery_coords) do
-    with :ok <- Bodyguard.permit!(TaskManager.Policy, :task_creation, user) do
+  @spec create_task(User.t(), {float(), float()}, {float(), float()}) ::
+          {:ok, Task.t()} | {:error, Ecto.Changeset.t()}
+  def create_task(user, pickup_coords, delivery_coords) do
+    with :ok <- Bodyguard.permit(TaskManager.Policy, :task_creation, user) do
       %Task{}
       |> Task.create_changeset(%{
         creator: user,
         pickup_point: Task.to_gis_point(pickup_coords),
         delivery_point: Task.to_gis_point(delivery_coords)
       })
-      |> Repo.insert!()
+      |> Repo.insert()
     end
   end
 
@@ -82,21 +83,22 @@ defmodule NetronixGeo.Context.TaskManager do
   Only Driver role is available to assign task to itself (if task is not assigned)
   Manager is not able to set status assignee and change the status of task
   """
-  @spec assign_task!(non_neg_integer(), User.t()) :: :ok | no_return()
-  def assign_task!(task_id, user) do
-    with :ok <- Bodyguard.permit!(TaskManager.Policy, :task_status_update, user) do
+  @spec assign_task(User.t(), non_neg_integer()) ::
+          {:ok, User.t()} | {:error, Ecto.Changeset.t()} | {:error, term()}
+  def assign_task(user, task_id) do
+    with :ok <- Bodyguard.permit(TaskManager.Policy, :task_status_update, user) do
       query =
         from task in Task,
           where: task.id == ^task_id and is_nil(task.assignee_id),
           preload: [:assignee]
 
-      task = Repo.one!(query)
-
-      Task.assign_changeset(task, %{assignee: user})
-      |> Repo.update!()
+      if task = Repo.one(query) do
+        Task.assign_changeset(task, %{assignee: user})
+        |> Repo.update()
+      else
+        {:error, :not_found}
+      end
     end
-
-    :ok
   end
 
   @doc """
@@ -105,19 +107,20 @@ defmodule NetronixGeo.Context.TaskManager do
   Only Driver role is available to set a task completion statu (if driver is already an owner of the task)
   Manager is not able to change the status of task
   """
-  @spec complete_task!(non_neg_integer(), User.t()) :: :ok | no_return()
-  def complete_task!(task_id, user) do
-    with :ok <- Bodyguard.permit!(TaskManager.Policy, :task_status_update, user) do
+  @spec complete_task(User.t(), non_neg_integer()) ::
+          {:ok, User.t()} | {:error, Ecto.Changeset.t()} | {:error, term()}
+  def complete_task(user, task_id) do
+    with :ok <- Bodyguard.permit(TaskManager.Policy, :task_status_update, user) do
       query =
         from task in Task,
           where: task.id == ^task_id and task.assignee_id == ^user.id
 
-      task = Repo.one!(query)
-
-      Task.complete_changeset(task)
-      |> Repo.update!()
+      if task = Repo.one(query) do
+        Task.complete_changeset(task)
+        |> Repo.update()
+      else
+        {:error, :not_found}
+      end
     end
-
-    :ok
   end
 end

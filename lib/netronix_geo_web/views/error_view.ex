@@ -7,6 +7,10 @@ defmodule NetronixGeoWeb.ErrorView do
   #   %{errors: %{detail: "Internal Server Error"}}
   # end
 
+  def render("400.json", %{message: message}) do
+    %{errors: %{detail: message}}
+  end
+
   # By default, Phoenix returns the status message from
   # the template name. For example, "404.json" becomes
   # "Not Found".

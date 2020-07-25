@@ -17,6 +17,8 @@ defmodule NetronixGeoWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
+  alias NetronixGeoWeb.Auth.Guardian
+
   using do
     quote do
       # Import conveniences for testing with connections
@@ -38,6 +40,8 @@ defmodule NetronixGeoWeb.ConnCase do
       Ecto.Adapters.SQL.Sandbox.mode(NetronixGeo.Repo, {:shared, self()})
     end
 
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+    conn = Phoenix.ConnTest.build_conn()
+
+    {:ok, conn: conn}
   end
 end

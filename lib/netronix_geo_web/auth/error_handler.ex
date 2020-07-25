@@ -1,10 +1,11 @@
 defmodule NetronixGeoWeb.Auth.ErrorHandler do
   @moduledoc false
 
-  import Plug.Conn
+  import Phoenix.Controller
 
   def auth_error(conn, {type, _reason}, _opts) do
-    body = Jason.encode!(%{message: to_string(type)})
-    send_resp(conn, 401, body)
+    conn
+    |> put_view(NetronixGeoWeb.ErrorView)
+    |> render("401.json", %{message: to_string(type)})
   end
 end
