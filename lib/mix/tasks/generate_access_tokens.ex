@@ -1,4 +1,8 @@
 defmodule Mix.Tasks.GenerateAccessTokens do
+  @moduledoc """
+  Module implements simple mix tasks to generate access tokens for all predifined users
+  """
+
   use Mix.Task
   import Ecto.Query, only: [from: 2]
 

@@ -1,4 +1,8 @@
 defmodule NetronixGeoWeb.AuthPipeline do
+  @moduledoc """
+  Pipeline plug implementation to prevent requests without auth token
+  """
+
   use Guardian.Plug.Pipeline,
     otp_app: :netronix_geo,
     module: NetronixGeoWeb.Auth.Guardian,

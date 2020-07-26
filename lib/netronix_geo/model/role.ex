@@ -1,4 +1,6 @@
 defmodule NetronixGeo.Model.Role do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Changeset
 

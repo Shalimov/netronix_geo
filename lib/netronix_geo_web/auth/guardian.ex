@@ -1,4 +1,8 @@
 defmodule NetronixGeoWeb.Auth.Guardian do
+  @moduledoc """
+  Module implements Guarian callbacks
+  to work with resources related to NetronixGeo app
+  """
   use Guardian, otp_app: :netronix_geo
 
   alias NetronixGeo.Context.Accounts
