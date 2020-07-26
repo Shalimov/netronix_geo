@@ -11,10 +11,7 @@ defmodule NetronixGeoWeb.TaskController do
   def create(conn, %{"pickup_coords" => [plng, plat], "delivery_coords" => [dlng, dlat]}) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    pickup_coords = {to_float(plng), to_float(plat)}
-    delivery_coords = {to_float(dlng), to_float(dlat)}
-
-    with {:ok, task} <- TaskManager.create_task(current_user, pickup_coords, delivery_coords) do
+    with {:ok, task} <- TaskManager.create_task(current_user, {plng, plat}, {dlng, dlat}) do
       json(conn, task)
     end
   end

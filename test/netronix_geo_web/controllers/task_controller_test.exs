@@ -40,7 +40,7 @@ defmodule NetronixGeoWeb.TaskControllerTest do
       conn =
         conn
         |> GPlug.put_current_resource(driver)
-        |> post("/api/tasks", %{"pickup_coords" => ["1", "1"], "delivery_coords" => ["1", "1"]})
+        |> post("/api/tasks", %{"pickup_coords" => [1, 1], "delivery_coords" => [1, 1]})
 
       assert json_response(conn, 403)["errors"] == %{"detail" => "Forbidden"}
     end
@@ -55,7 +55,7 @@ defmodule NetronixGeoWeb.TaskControllerTest do
       conn =
         conn
         |> GPlug.put_current_resource(manager)
-        |> post("/api/tasks", %{"pickup_coords" => ["1", "1"], "delivery_coords" => ["1", "1"]})
+        |> post("/api/tasks", %{"pickup_coords" => [1, 1], "delivery_coords" => [1, 1]})
 
       manager_id = manager.id
 
@@ -66,8 +66,8 @@ defmodule NetronixGeoWeb.TaskControllerTest do
                "assigned_at" => nil,
                "assignee_id" => nil,
                "completed_at" => nil,
-               "delivery_point" => [1.0, 1.0],
-               "pickup_point" => [1.0, 1.0]
+               "delivery_point" => [1, 1],
+               "pickup_point" => [1, 1]
              } = json_response(conn, 200)
     end
   end
