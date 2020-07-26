@@ -1,4 +1,4 @@
-defmodule NetronixGeo.AccountsTest do
+defmodule NetronixGeo.Context.AccountsTest do
   use NetronixGeo.DataCase
   import NetronixGeo.DataFactory
 

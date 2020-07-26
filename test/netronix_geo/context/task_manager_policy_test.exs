@@ -1,4 +1,4 @@
-defmodule NetronixGeo.TaskManagerPolicyTest do
+defmodule NetronixGeo.Context.TaskManagerPolicyTest do
   use ExUnit.Case
 
   alias NetronixGeo.Model.{User, Role}

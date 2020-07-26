@@ -4,6 +4,12 @@ defmodule NetronixGeoWeb.ErrorViewTest do
   # Bring render/3 and render_to_string/3 for testing custom views
   import Phoenix.View
 
+  test "renders 400.json" do
+    assert render(NetronixGeoWeb.ErrorView, "400.json", %{message: "Bad requesto"}) == %{
+             errors: %{detail: "Bad requesto"}
+           }
+  end
+
   test "renders 404.json" do
     assert render(NetronixGeoWeb.ErrorView, "404.json", []) == %{errors: %{detail: "Not Found"}}
   end

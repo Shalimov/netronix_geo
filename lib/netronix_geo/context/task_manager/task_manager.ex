@@ -11,6 +11,7 @@ defmodule NetronixGeo.Context.TaskManager do
   alias NetronixGeo.Model.{Task, User}
 
   defdelegate authorize(action, user, params), to: TaskManager.Policy
+  defguardp is_coords(coords) when is_number(elem(coords, 0)) and is_number(elem(coords, 1))
 
   @doc """
   Returns the list of tasks by status
@@ -47,11 +48,11 @@ defmodule NetronixGeo.Context.TaskManager do
 
   """
   @spec list_nearest_tasks({float(), float()}) :: {:ok, list(Task.t())}
-  def list_nearest_tasks(location) do
+  def list_nearest_tasks(coords) when is_coords(coords) do
     query =
       from task in Task,
         where: is_nil(task.assignee_id),
-        order_by: st_distance(^Task.to_gis_point(location), task.pickup_point),
+        order_by: st_distance(^Task.to_gis_point(coords), task.pickup_point),
         limit: 10
 
     {:ok, Repo.all(query)}
@@ -65,7 +66,8 @@ defmodule NetronixGeo.Context.TaskManager do
   """
   @spec create_task(User.t(), {float(), float()}, {float(), float()}) ::
           {:ok, Task.t()} | {:error, Ecto.Changeset.t()}
-  def create_task(user, pickup_coords, delivery_coords) do
+  def create_task(user, pickup_coords, delivery_coords)
+      when is_coords(pickup_coords) and is_coords(delivery_coords) do
     with :ok <- Bodyguard.permit(TaskManager.Policy, :task_creation, user) do
       %Task{}
       |> Task.create_changeset(%{

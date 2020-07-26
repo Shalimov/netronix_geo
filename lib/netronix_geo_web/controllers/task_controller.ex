@@ -11,7 +11,10 @@ defmodule NetronixGeoWeb.TaskController do
   def create(conn, %{"pickup_coords" => [plng, plat], "delivery_coords" => [dlng, dlat]}) do
     current_user = Guardian.Plug.current_resource(conn)
 
-    with {:ok, task} <- TaskManager.create_task(current_user, {plng, plat}, {dlng, dlat}) do
+    pickup_coords = {to_float(plng), to_float(plat)}
+    delivery_coords = {to_float(dlng), to_float(dlat)}
+
+    with {:ok, task} <- TaskManager.create_task(current_user, pickup_coords, delivery_coords) do
       json(conn, task)
     end
   end
@@ -51,7 +54,9 @@ defmodule NetronixGeoWeb.TaskController do
   """
   @spec list_nearest_tasks(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def list_nearest_tasks(conn, %{"lng" => lng, "lat" => lat}) do
-    with {:ok, tasks} <- TaskManager.list_nearest_tasks({lng, lat}) do
+    coords = {to_float(lng), to_float(lat)}
+
+    with {:ok, tasks} <- TaskManager.list_nearest_tasks(coords) do
       json(conn, tasks)
     end
   end
@@ -76,4 +81,6 @@ defmodule NetronixGeoWeb.TaskController do
 
   defp bad_request(message),
     do: {:error, {:bad_request, message}}
+
+  defp to_float(value) when is_binary(value), do: elem(Float.parse(value), 0)
 end
