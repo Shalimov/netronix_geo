@@ -7,6 +7,8 @@ defmodule NetronixGeo.MixProject do
       version: "0.1.0",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [coveralls: :test],
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -47,8 +49,10 @@ defmodule NetronixGeo.MixProject do
       {:guardian, "~> 2.1"},
       {:argon2_elixir, "~> 2.3"},
       {:comeonin, "~> 5.3"},
+      {:bodyguard, "~> 2.4"},
+      # dev deps
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:bodyguard, "~> 2.4"}
+      {:excoveralls, "~> 0.13.1"}
     ]
   end
 
@@ -63,7 +67,8 @@ defmodule NetronixGeo.MixProject do
       setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "gen.tokens": ["generate_access_tokens"]
     ]
   end
 end

@@ -17,8 +17,6 @@ defmodule NetronixGeoWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
-  alias NetronixGeoWeb.Auth.Guardian
-
   using do
     quote do
       # Import conveniences for testing with connections

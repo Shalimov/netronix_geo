@@ -1,0 +1,8 @@
+{
+  "skip_files": [
+    "lib/mix",
+    "test",
+    "lib/netronix_geo_web/router.ex",
+    "lib/netronix_geo_web/endpoint.ex"
+  ]
+}

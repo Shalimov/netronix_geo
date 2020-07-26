@@ -20,22 +20,4 @@ defmodule NetronixGeoWeb.Auth.Guardian do
   rescue
     Ecto.NoResultsError -> {:error, :resource_not_found}
   end
-
-  def decode_permissions_from_claims(%{"roles" => roles}), do: roles
-
-  def all_permissions?(roles, %{roles: expected_roles}) do
-    roles_set = MapSet.new(roles)
-    exp_roles_set = MapSet.new(expected_roles)
-
-    MapSet.equal?(roles_set, exp_roles_set)
-  end
-
-  def any_permissions?(roles, %{roles: expected_roles}) do
-    roles_set = MapSet.new(roles)
-    exp_roles_set = MapSet.new(expected_roles)
-
-    MapSet.intersection(roles_set, exp_roles_set)
-    |> MapSet.size()
-    |> Kernel.>(0)
-  end
 end

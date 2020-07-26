@@ -36,9 +36,6 @@ defmodule NetronixGeoWeb do
       # Import convenience functions from controllers
       import Phoenix.Controller,
         only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
-
-      # Include shared imports and aliases for views
-      unquote(view_helpers())
     end
   end
 
@@ -48,24 +45,6 @@ defmodule NetronixGeoWeb do
 
       import Plug.Conn
       import Phoenix.Controller
-    end
-  end
-
-  def channel do
-    quote do
-      use Phoenix.Channel
-      import NetronixGeoWeb.Gettext
-    end
-  end
-
-  defp view_helpers do
-    quote do
-      # Import basic rendering functionality (render, render_layout, etc)
-      import Phoenix.View
-
-      import NetronixGeoWeb.ErrorHelpers
-      import NetronixGeoWeb.Gettext
-      alias NetronixGeoWeb.Router.Helpers, as: Routes
     end
   end
 

@@ -25,13 +25,13 @@ defmodule NetronixGeo.Context.TaskManager do
     [%Task{}, ...]
 
   """
-  def list_tasks(user, status \\ "all") when status in ["assigned", "completed", "all"] do
+  def list_tasks(user, status) when status in ["assigned", "completed", "all"] do
     with :ok <- Bodyguard.permit(TaskManager.Policy, :list_tasks_by_status, user) do
       query =
         case status do
           "completed" -> from task in Task, where: not is_nil(task.completed_at)
           "assigned" -> from task in Task, where: not is_nil(task.assigned_at)
-          _ -> from(task in Task)
+          "all" -> from(task in Task)
         end
 
       {:ok, Repo.all(query)}
