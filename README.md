@@ -11,7 +11,7 @@ To start your NetronixGeo server:
 1. Ensure PostgreSQL is installed with PostGIS extension
 2. Create postgre user **(netronix_usr)** with superuser privelegies (for postgis activation via migration (check first `repo/migration` in `priv` folder))*
 3. `mix deps.get` && `mix setup` && `mix phx.server`
-4. `mix generate_access_tokens` // to generate access tokens for 4 base users **(2 drivers and 2 manager)**
+4. `mix gen.tokens` // to generate access tokens for 4 base users **(2 drivers and 2 manager)**
 5. That's IT ^^
 
 \* - user without superuser privs can be used (but in this case you need to active PostGIS extension manually)
