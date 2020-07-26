@@ -25,6 +25,6 @@ NB: to run test just input `mix test`
 |Create task| post 	| /api/tasks 	| body(json) 	| `{ "pickup_coords": [number, number], "delivery_coords": [number, number] }`| Manager 	|
 |Assign task| patch 	| /api/tasks/:id/assign 	| path 	| task id 	| Driver 	|
 |Complete task| patch 	| /api/tasks/:id/complete 	| path 	| task id 	| Driver 	|
-|List 20 nearest tasks | get 	| /api/tasks/nearest 	| query 	| ?lng=number&lat=number 	| Manager, Driver 	|
+|List 10 nearest tasks | get 	| /api/tasks/nearest 	| query 	| ?lng=number&lat=number 	| Manager, Driver 	|
 |List all or assigned or completed tasks| get 	| /api/tasks/:status 	| path 	| all, assigned, completed 	| Manager 	|
 
