@@ -6,6 +6,8 @@ defmodule NetronixGeo.Context.TaskManager do
   import Ecto.Query, only: [from: 2, from: 1], warn: false
   import Geo.PostGIS, only: [st_distance: 2]
 
+  import NetronixGeo.Authorize
+
   alias __MODULE__
   alias NetronixGeo.Repo
   alias NetronixGeo.Model.{Task, User}
@@ -18,6 +20,7 @@ defmodule NetronixGeo.Context.TaskManager do
 
   Where status can be "assigned", "completed", "all"
   Only manger can list task by status
+  NB!: (User is used behind the scene inside generated (by defauth) function)
 
   ## Examples
 
@@ -25,17 +28,19 @@ defmodule NetronixGeo.Context.TaskManager do
     [%Task{}, ...]
 
   """
-  def list_tasks(user, status) when status in ["assigned", "completed", "all"] do
-    with :ok <- Bodyguard.permit(TaskManager.Policy, :list_tasks_by_status, user) do
-      query =
-        case status do
-          "completed" -> from task in Task, where: not is_nil(task.completed_at)
-          "assigned" -> from task in Task, where: not is_nil(task.assigned_at)
-          "all" -> from(task in Task)
-        end
+  @spec list_tasks(User.t(), String.t()) ::
+          {:ok, list(Task.t())} | {:error, Ecto.Changeset.t()} | {:error, term()}
+  defauth list_tasks(user, status) when status in ["assigned", "completed", "all"],
+    policy: TaskManager.Policy,
+    for: :list_tasks_by_status do
+    query =
+      case status do
+        "completed" -> from task in Task, where: not is_nil(task.completed_at)
+        "assigned" -> from task in Task, where: not is_nil(task.assigned_at)
+        "all" -> from(task in Task)
+      end
 
-      {:ok, Repo.all(query)}
-    end
+    {:ok, Repo.all(query)}
   end
 
   @doc """
@@ -66,17 +71,17 @@ defmodule NetronixGeo.Context.TaskManager do
   """
   @spec create_task(User.t(), {float(), float()}, {float(), float()}) ::
           {:ok, Task.t()} | {:error, Ecto.Changeset.t()}
-  def create_task(user, pickup_coords, delivery_coords)
-      when is_coords(pickup_coords) and is_coords(delivery_coords) do
-    with :ok <- Bodyguard.permit(TaskManager.Policy, :task_creation, user) do
-      %Task{}
-      |> Task.create_changeset(%{
-        creator: user,
-        pickup_point: Task.to_gis_point(pickup_coords),
-        delivery_point: Task.to_gis_point(delivery_coords)
-      })
-      |> Repo.insert()
-    end
+  defauth create_task(user, pickup_coords, delivery_coords)
+          when is_coords(pickup_coords) and is_coords(delivery_coords),
+          policy: TaskManager.Policy,
+          for: :task_creation do
+    %Task{}
+    |> Task.create_changeset(%{
+      creator: user,
+      pickup_point: Task.to_gis_point(pickup_coords),
+      delivery_point: Task.to_gis_point(delivery_coords)
+    })
+    |> Repo.insert()
   end
 
   @doc """
@@ -87,19 +92,17 @@ defmodule NetronixGeo.Context.TaskManager do
   """
   @spec assign_task(User.t(), non_neg_integer()) ::
           {:ok, User.t()} | {:error, Ecto.Changeset.t()} | {:error, term()}
-  def assign_task(user, task_id) do
-    with :ok <- Bodyguard.permit(TaskManager.Policy, :task_status_update, user) do
-      query =
-        from task in Task,
-          where: task.id == ^task_id and is_nil(task.assignee_id),
-          preload: [:assignee]
+  defauth assign_task(user, task_id), policy: TaskManager.Policy, for: :task_status_update do
+    query =
+      from task in Task,
+        where: task.id == ^task_id and is_nil(task.assignee_id),
+        preload: [:assignee]
 
-      if task = Repo.one(query) do
-        Task.assign_changeset(task, %{assignee: user})
-        |> Repo.update()
-      else
-        {:error, :not_found}
-      end
+    if task = Repo.one(query) do
+      Task.assign_changeset(task, %{assignee: user})
+      |> Repo.update()
+    else
+      {:error, :not_found}
     end
   end
 
@@ -111,18 +114,16 @@ defmodule NetronixGeo.Context.TaskManager do
   """
   @spec complete_task(User.t(), non_neg_integer()) ::
           {:ok, User.t()} | {:error, Ecto.Changeset.t()} | {:error, term()}
-  def complete_task(user, task_id) do
-    with :ok <- Bodyguard.permit(TaskManager.Policy, :task_status_update, user) do
-      query =
-        from task in Task,
-          where: task.id == ^task_id and task.assignee_id == ^user.id
+  defauth complete_task(user, task_id), policy: TaskManager.Policy, for: :task_status_update do
+    query =
+      from task in Task,
+        where: task.id == ^task_id and task.assignee_id == ^user.id
 
-      if task = Repo.one(query) do
-        Task.complete_changeset(task)
-        |> Repo.update()
-      else
-        {:error, :not_found}
-      end
+    if task = Repo.one(query) do
+      Task.complete_changeset(task)
+      |> Repo.update()
+    else
+      {:error, :not_found}
     end
   end
 end
