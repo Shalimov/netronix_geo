@@ -31,8 +31,7 @@ defmodule NetronixGeo.Context.TaskManager do
   @spec list_tasks(User.t(), String.t()) ::
           {:ok, list(Task.t())} | {:error, Ecto.Changeset.t()} | {:error, term()}
   defauth list_tasks(user, status) when status in ["assigned", "completed", "all"],
-    policy: TaskManager.Policy,
-    for: :list_tasks_by_status do
+    policy: TaskManager.Policy do
     query =
       case status do
         "completed" -> from task in Task, where: not is_nil(task.completed_at)
@@ -73,8 +72,7 @@ defmodule NetronixGeo.Context.TaskManager do
           {:ok, Task.t()} | {:error, Ecto.Changeset.t()}
   defauth create_task(user, pickup_coords, delivery_coords)
           when is_coords(pickup_coords) and is_coords(delivery_coords),
-          policy: TaskManager.Policy,
-          for: :task_creation do
+          policy: TaskManager.Policy do
     %Task{}
     |> Task.create_changeset(%{
       creator: user,
@@ -92,7 +90,7 @@ defmodule NetronixGeo.Context.TaskManager do
   """
   @spec assign_task(User.t(), non_neg_integer()) ::
           {:ok, User.t()} | {:error, Ecto.Changeset.t()} | {:error, term()}
-  defauth assign_task(user, task_id), policy: TaskManager.Policy, for: :task_status_update do
+  defauth assign_task(user, task_id), policy: TaskManager.Policy do
     query =
       from task in Task,
         where: task.id == ^task_id and is_nil(task.assignee_id),
@@ -114,7 +112,7 @@ defmodule NetronixGeo.Context.TaskManager do
   """
   @spec complete_task(User.t(), non_neg_integer()) ::
           {:ok, User.t()} | {:error, Ecto.Changeset.t()} | {:error, term()}
-  defauth complete_task(user, task_id), policy: TaskManager.Policy, for: :task_status_update do
+  defauth complete_task(user, task_id), policy: TaskManager.Policy do
     query =
       from task in Task,
         where: task.id == ^task_id and task.assignee_id == ^user.id
