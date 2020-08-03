@@ -3,8 +3,8 @@ defmodule NetronixGeo.Repo.Migrations.CreateTasks do
 
   def change do
     create table "tasks" do
-      add :pickup_point, :geometry
-      add :delivery_point, :geometry
+      add :pickup_point, :point
+      add :delivery_point, :point
       add :assigned_at, :naive_datetime
       add :completed_at, :naive_datetime
       add :creator_id, references(:users, on_delete: :nilify_all)

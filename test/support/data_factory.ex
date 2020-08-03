@@ -20,8 +20,8 @@ defmodule NetronixGeo.DataFactory do
 
   def build(:task) do
     %Task{
-      pickup_point: Task.to_gis_point({Enum.random(1..400), Enum.random(1..400)}),
-      delivery_point: Task.to_gis_point({Enum.random(1..400), Enum.random(1..400)})
+      pickup_point: {Enum.random(1..400), Enum.random(1..400)},
+      delivery_point: {Enum.random(1..400), Enum.random(1..400)}
     }
   end
 

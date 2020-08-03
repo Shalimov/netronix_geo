@@ -165,7 +165,11 @@ defmodule NetronixGeo.Context.TaskManagerTest do
 
       {:ok, tasks} = TaskManager.list_nearest_tasks({5, 5})
 
-      assert Enum.map(tasks, &{&1.pickup_point.coordinates, &1.delivery_point.coordinates}) == [
+      assert Enum.map(
+               tasks,
+               &{{&1.pickup_point.x, &1.pickup_point.y},
+                {&1.delivery_point.x, &1.delivery_point.y}}
+             ) == [
                {{4.0, 5.0}, {50.0, 50.0}},
                {{1.0, 1.0}, {20.0, 20.0}},
                {{10.0, 10.0}, {50.0, 50.0}},

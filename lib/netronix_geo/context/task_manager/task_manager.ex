@@ -4,9 +4,9 @@ defmodule NetronixGeo.Context.TaskManager do
   """
 
   import Ecto.Query, only: [from: 2, from: 1], warn: false
-  import Geo.PostGIS, only: [st_distance: 2]
 
   import NetronixGeo.Authorize
+  import NetronixGeo.Postgres.PGPoint.Operations
 
   alias __MODULE__
   alias NetronixGeo.Repo
@@ -53,10 +53,12 @@ defmodule NetronixGeo.Context.TaskManager do
   """
   @spec list_nearest_tasks({float(), float()}) :: {:ok, list(Task.t())}
   def list_nearest_tasks(coords) when is_coords(coords) do
+    point = %Postgrex.Point{x: elem(coords, 0), y: elem(coords, 1)}
+
     query =
       from task in Task,
         where: is_nil(task.assignee_id),
-        order_by: st_distance(^Task.to_gis_point(coords), task.pickup_point),
+        order_by: ^point <~> task.pickup_point,
         limit: 10
 
     {:ok, Repo.all(query)}
@@ -76,8 +78,8 @@ defmodule NetronixGeo.Context.TaskManager do
     %Task{}
     |> Task.create_changeset(%{
       creator: user,
-      pickup_point: Task.to_gis_point(pickup_coords),
-      delivery_point: Task.to_gis_point(delivery_coords)
+      pickup_point: pickup_coords,
+      delivery_point: delivery_coords
     })
     |> Repo.insert()
   end

@@ -4,16 +4,12 @@ defmodule NetronixGeo.Model.Task do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Geo.{Point, PostGIS.Geometry}
+  alias NetronixGeo.Postgres.PGPoint
   alias NetronixGeo.Model
 
-  # SRID - corresponds to a spatial reference
-  # system based on the specific ellipsoid used for either flat-earth mapping or round-earth mapping
-  @srid 4326
-
   schema "tasks" do
-    field :pickup_point, Geometry
-    field :delivery_point, Geometry
+    field :pickup_point, PGPoint
+    field :delivery_point, PGPoint
 
     field :assigned_at, :naive_datetime
     field :completed_at, :naive_datetime
@@ -54,10 +50,6 @@ defmodule NetronixGeo.Model.Task do
     change(task)
     |> put_change(:completed_at, current_time())
   end
-
-  @doc false
-  @spec to_gis_point({float(), float()}) :: Point.t()
-  def to_gis_point(coords), do: %Point{coordinates: coords, srid: @srid}
 
   @doc false
   @spec current_time() :: NaiveDateTime.t()

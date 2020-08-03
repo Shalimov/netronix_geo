@@ -42,8 +42,8 @@ for {pickup_point, delivery_point} <- tasks do
   task =
     Task.create_changeset(%Task{}, %{
       creator: manager,
-      pickup_point: Task.to_gis_point(pickup_point),
-      delivery_point: Task.to_gis_point(delivery_point)
+      pickup_point: pickup_point,
+      delivery_point: delivery_point
     })
 
   Repo.insert!(task)
