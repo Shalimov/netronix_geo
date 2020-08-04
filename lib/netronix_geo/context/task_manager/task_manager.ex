@@ -6,7 +6,7 @@ defmodule NetronixGeo.Context.TaskManager do
   import Ecto.Query, only: [from: 2, from: 1], warn: false
 
   import NetronixGeo.Authorize
-  import NetronixGeo.Postgres.PGPoint.Operations
+  import NetronixGeo.Postgres.PGPoint.Operators
 
   alias __MODULE__
   alias NetronixGeo.Repo

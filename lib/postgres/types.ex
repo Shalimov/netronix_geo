@@ -19,7 +19,7 @@ defmodule NetronixGeo.Postgres.PGPoint do
   def dump(%Point{} = value), do: {:ok, value}
   def dump(_), do: :error
 
-  defmodule Operations do
+  defmodule Operators do
     # Similart to Postgre <-> operator to use in the same way
     # For kNN search
     defmacro p1 <~> p2 do
