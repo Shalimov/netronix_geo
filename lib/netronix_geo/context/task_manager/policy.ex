@@ -5,7 +5,7 @@ defmodule NetronixGeo.Context.TaskManager.Policy do
 
   alias NetronixGeo.Model.User
 
-  @type action :: :task_creation | :task_status_update | :list_tasks_by_status
+  @type action :: :complete_task | :assign_task | :create_task | :list_tasks
 
   @behaviour Bodyguard.Policy
 
